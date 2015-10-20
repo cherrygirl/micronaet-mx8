@@ -3,7 +3,7 @@
     <data><!--noupdate="1"-->
         <record id="header_webkit_status" model="ir.header_webkit">
             <field name="orientation">Portrait</field>
-            <field name="format">A4</field>
+            <field name="format">A3</field>
             <field name="margin_top">20</field>
             <field name="html"><![CDATA[<html>
     <head>
@@ -62,12 +62,12 @@ thead{
             <field  name="name">Material status report</field>
         </record>
         <report
-            id="webkit_status_report"
+            id="webkit_in_report_status_report"
             auto="False"
-            model="mrp.production"
-            name="webkitworkstatus"
-            file="production_working_bom/report/status_work.mako"
-            string="Material status"
+            model="mrp.bom"
+            name="webkitinreportstatus"
+            file="textilene_status/report/textilene_status.mako"
+            string="In report status"
             report_type="webkit"
             webkit_header="header_webkit_status"
             />

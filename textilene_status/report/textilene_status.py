@@ -46,10 +46,7 @@ class report_webkit_html(report_sxw.rml_parse):
         # -------------------------
         self.rows = []
         self.cols = []
-        self.minimum = {}
         self.table = {}
-        self.error_in_print = ""
-        
 
         super(report_webkit_html, self).__init__(
             cr, uid, name, context=context)
@@ -69,14 +66,12 @@ class report_webkit_html(report_sxw.rml_parse):
         if data is None:
             data = {}
                     
+        # -------------------
         # initialize globals:
+        # -------------------
         self.rows = []
         self.cols = []
-        self.minimum = {}
         self.table = {}
-        self.error_in_print = "" # TODO manage for set printer
-        
-        lavoration_pool = self.pool.get("mrp.production.workcenter.line")
         
         # TODO optimize:
         product_pool = self.pool.get('product.product')        
@@ -183,7 +178,6 @@ class report_webkit_html(report_sxw.rml_parse):
             col=n position
             return: (quantity, minimum value)
         '''
-        # TODO get from table
         if row in self.table:
             return (self.table[row][col], self.minimum.get(row, 0.0))
         return (0.0, 0.0)
