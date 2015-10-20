@@ -53,7 +53,7 @@ class ProductProduct(orm.Model):
         res = {}
         mrp_pool = self.pool.get('mrp.bom')
         
-        # All bom 'in report' for product passed
+        # All 'in report' bom for product passed
         mrp_ids = mrp_pool.search(cr, uid, [
             ('product_id', 'in', ids),
             ('in_report', '=', True),
@@ -90,8 +90,9 @@ class MrpBom(orm.Model):
     def _function_call(self, cr, uid, ids, fields, args, context=None):
         ''' Fields function for calculate 
         '''
-        res = dict.fromkeys(ids, False)
-        # TODO True if one in_report material is present
+        res = {}
+        for item in self.browse(cr, uid, ids, context=context):
+            res[bom.id] = any([line.in_report for line in item.bom_line_ids])
         return res
         
     _columns = {
