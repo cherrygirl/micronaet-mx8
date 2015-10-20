@@ -30,6 +30,7 @@
     'license': 'AGPL-3',
     'depends': [
         'base',
+        'mrp',
         'report_webkit',
         ],
     'init_xml': [],
@@ -37,7 +38,7 @@
     'data': [
         #'security/ir.model.access.csv',
         
-        #'textilene_views.xml',
+        'textilene_views.xml',
         #'wizard/textilene_status_report.xml',
 
         #'report/textilene_status_report.xml',

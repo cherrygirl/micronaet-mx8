@@ -38,4 +38,15 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 
 _logger = logging.getLogger(__name__)
 
+
+class ProductProduct(orm.Model):
+    ''' Append extra fields to product obj
+    '''
+    _inherit = 'product.product'
+    
+    _columns = {
+        'textilene_material': fields.boolean('Textilene material',
+            help='Material that will be represented in status report'),
+    }
+
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
