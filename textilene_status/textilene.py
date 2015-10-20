@@ -79,7 +79,7 @@ class ProductProduct(orm.Model):
             _get_report_bom, method=True, 
             type='many2one', relation='mrp.bom', string='Textilene bom', 
             help='One reference BOM for product (for in report status)',
-            store=False),                        
+            store=False),            
         }
 
 class MrpBom(orm.Model):
@@ -97,11 +97,21 @@ class MrpBom(orm.Model):
         return res
         
     _columns = {
-        # header:
         'in_report': fields.function(
             _in_report_bom, method=True, 
             type='boolean', string='In report', store=False, 
             help='If true the bom will be tracked for status report'), 
-                        
         }
+
+class MrpBomLine(orm.Model):
+    ''' Append extra fields to BOM line
+    '''
+    _inherit = 'mrp.bom.line'
+
+    _columns = {
+        'in_report_product': fields.related(
+            'product_id', 'in_report', type='boolean', 
+            string='Product in report', store=False),
+        }    
+    
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
