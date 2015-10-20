@@ -19,8 +19,6 @@
 ###############################################################################
 
 
-#import status_work
-import status_hour
-
+import textilene_status
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 

@@ -18,7 +18,7 @@
 #
 ###############################################################################
 import textilene
-#import report
+import report
 #import wizard
 
 

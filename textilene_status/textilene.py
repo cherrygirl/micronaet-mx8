@@ -109,7 +109,7 @@ class MrpBomLine(orm.Model):
     _inherit = 'mrp.bom.line'
 
     _columns = {
-        'in_report_product': fields.related(
+        'in_report': fields.related(
             'product_id', 'in_report', type='boolean', 
             string='Product in report', store=False),
         }    

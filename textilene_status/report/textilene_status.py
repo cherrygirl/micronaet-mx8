@@ -2,12 +2,14 @@
 ##############################################################################
 #
 #    OpenERP module
-#    Copyright (C) 2010 Micronaet srl (<http://www.micronaet.it>) and the
+#    Copyright (C) 2010 Micronaet srl (<http://www.micronaet.it>) 
+#    
 #    Italian OpenERP Community (<http://www.openerp-italia.com>)
 #
-#    ########################################################################
+#############################################################################
+#
 #    OpenERP, Open Source Management Solution	
-#    Copyright (C) 2004-2008 Tiny SPRL (<http://tiny.be>). All Rights Reserved
+#    Copyright (C) 2004-2009 Tiny SPRL (<http://tiny.be>). All Rights Reserved
 #    $Id$
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -24,109 +26,44 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+import sys
+import os
+from openerp.osv import osv
+from datetime import datetime, timedelta
+from openerp.report import report_sxw
+import logging, time
+from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT, 
+    DEFAULT_SERVER_DATETIME_FORMAT, DATETIME_FORMATS_MAP, float_compare)
 
 
-from openerp import api, models
+# Global elements:
+_logger = logging.getLogger(__name__)
 
-class ReportStatusHour(models.AbstractModel):
-    ''' Report parser status of hour
-    '''
-    
-    _name = 'report.production_working_bom.report_status_hour'
-    
-    # -------------------------------------------------------------------------
-    # Render method:
-    # -------------------------------------------------------------------------
-        
-    @api.multi
-    def render_html(self, data=None):
-        ''' Renter report action:
-        '''
-        # ---------------------------------------------------------------------
+class report_webkit_html(report_sxw.rml_parse):    
+    def __init__(self, cr, uid, name, context):    
+        # -------------------------
         # Set up private variables:
-        # ---------------------------------------------------------------------
+        # -------------------------
         self.rows = []
         self.cols = []
         self.minimum = {}
         self.table = {}
-        self.counter = {} # counter dict
+        self.error_in_print = ""
         
-        report_obj = self.env['report']
-        report = report_obj._get_report_from_name(
-            'production_working_bom.report_status_hour')
-        docargs = {
-            'doc_ids': self._ids,
-            'doc_model': report.model,
-            'docs': self,
-            
-            # Counters:
-            'get_dict_counter': self.get_dict_counter,
-            'set_dict_counter': self.set_dict_counter,
 
-            # Report:
-            'startup': self._startup,
+        super(report_webkit_html, self).__init__(
+            cr, uid, name, context=context)
+        self.localcontext.update({
+            'time': time,
+            'cr': cr,
+            'uid': uid,
+            'start_up': self._start_up,
             'get_rows': self._get_rows,
             'get_cols': self._get_cols,
             'get_cel': self._get_cel,
-            'has_negative': self._has_negative,            
-            
-            # Color element:
-            'get_wh': self.get_wh,
-            }
-        return report_obj.render(
-            'production_working_bom.report_status_hour', 
-            docargs, 
-            )
+        })
 
-    def get_wh(self, ):
-        ''' Read company element with 
-        '''
-        company_proxy = self.pool.get('res.company').get_hour_parameters(
-            self.env.cr, self.env.uid)
-        return (
-            company_proxy.work_hour_day,
-            company_proxy.work_hour_day + company_proxy.extra_hour_day,
-            company_proxy.work_hour_day * company_proxy.employee,
-            company_proxy.employee * (
-                company_proxy.extra_hour_day + company_proxy.work_hour_day),
-            )
-
-    # -------------------------------------------------------------------------
-    # Counters methods:
-    # -------------------------------------------------------------------------
-    # Dict:
-    def set_dict_counter(self, name, item, value=False, with_return=False):
-        ''' Set element of dict counter
-        '''
-        # Fast setup of counter if not present
-        if name not in self.counter:
-            self.counter[name] = {}
-        self.counter[name][item] = value
-        if with_return:
-            return value
-        else: # nothing returned    
-            return ""
-
-    def get_dict_counter(self, name, item, default=False):
-        ''' Get element of counter:
-        '''
-        # Fast setup of counter if not present
-        if name not in self.counter:
-            self.counter[name] = {}
-        if item not in self.counter[name]:
-            # Fast set of default creating elements:
-            self.counter[name][item] = default
-        return self.counter[name][item]
-        
-    # -------------------------------------------------------------------------
-    # Report methods:
-    # -------------------------------------------------------------------------
-    def _has_negative(self, row, data=None):
-        ''' ???
-        '''
-        return 
-        
-    def _startup(self, data=None):
+    def _start_up(self, data=None):
         ''' Master function for prepare report
         '''
         if data is None:
@@ -135,68 +72,99 @@ class ReportStatusHour(models.AbstractModel):
         # initialize globals:
         self.rows = []
         self.cols = []
+        self.minimum = {}
         self.table = {}
-        self.counters = {}
+        self.error_in_print = "" # TODO manage for set printer
         
-        # Load production converter for get product code:
-        production_pool = self.pool.get("mrp.production")
-        production_ids = production_pool.search(self.env.cr, self.env.uid, [])
-        production_converter = {}
+        lavoration_pool = self.pool.get("mrp.production.workcenter.line")
         
-        for p in production_pool.browse(
-                self.env.cr, self.env.uid, production_ids):
-            production_converter[p.id] = (
-                p.product_id.default_code or p.product_id.name or "#NoCod")
-                
-        # Read cols elements:        
-        self.env.cr.execute("""
-            SELECT DISTINCT left(CAST(date_planned AS TEXT), 10) as day
-            FROM mrp_production_workcenter_line
-            ORDER BY day;
-            """)
-        for day in self.env.cr.fetchall():
-            day = day[0]
-            self.cols.append(day[-5:]) # populare cols list
-            
-            start = "%s 00:00:00" % day
-            end = "%s 23:59:59" % day
-            
-            self.env.cr.execute("""
-                SELECT rr.name, q.hour, q.workers, q.prod 
-                FROM (
-                    SELECT 
-                        workcenter_id AS wc, 
-                        sum(hour) AS hour, 
-                        min(workers) AS workers,
-                        production_id AS prod 
-                    FROM mrp_production_workcenter_line 
-                    WHERE date_planned >= %s and date_planned <= %s 
-                    GROUP BY workcenter_id, production_id, workers) AS q 
-                    
-                    JOIN mrp_workcenter wc ON (q.wc = wc.id) 
-                    JOIN resource_resource rr ON (wc.resource_id = rr.id) 
-                    ORDER BY rr.name;
-                """, (start, end))
+        # TODO optimize:
+        product_pool = self.pool.get('product.product')        
+        for product in product_pool.browse(
+            self.cr, self.uid, product_pool.search(self.cr, self.uid, [])):
+                 self.minimum[product.id] = product.minimum_qty or 0.0
 
-            for record in self.env.cr.fetchall():
-                if record[0] not in self.rows:
-                    self.rows.append(record[0])
-                    
-                k = (record[0], day[-5:]) # key for table elements
-                if k not in self.table:
-                    # Set up initial value
-                    self.table[k] = [
-                        0.0, # Hour / man
-                        0.0, # Total line hour
-                        [], # Products
-                        ]
+        # Init parameters:
+        col_ids = {}  
+        range_date = data.get("days", 7) + 1
+        start_date = datetime.now()
+        end_date = datetime.now() + timedelta(days = range_date - 1)
 
-                self.table[k][0] += record[1] * record[2]
-                self.table[k][1] += record[1]
-                self.table[k][2].append(
-                    production_converter.get(record[3], "??")) # production_id > default_code
-                
-        self.rows.sort() # only row
+        for i in range(0, range_date):        # 0 (<today), 1...n [today, today + total days], delta)
+            if i == 0:                        # today
+                d = start_date
+                self.cols.append(d.strftime("%d/%m"))
+                col_ids[d.strftime("%Y-%m-%d")] = 0
+            elif i == 1:                      # before today
+                d = start_date
+                self.cols.append(d.strftime("< %d/%m")) 
+                col_ids["before"] = 1         # not used!                    
+            else:                             # other days
+                d = start_date + timedelta(days = i - 1)
+                self.cols.append(d.strftime("%d/%m"))
+                col_ids[d.strftime("%Y-%m-%d")] = i
+
+        # ---------------------------------------------------------------------
+        #                   Get material list from Lavoration order
+        # ---------------------------------------------------------------------
+        # Populate cols
+        lavoration_ids = lavoration_pool.search(self.cr, self.uid, [
+            ('date_planned', '<=', end_date.strftime("%Y-%m-%d 23:59:59")),     # only < max date range
+            ('state', 'not in', ('cancel','done'))] )                                # only open not canceled
+        for lavoration in lavoration_pool.browse(self.cr, self.uid, lavoration_ids): # filtered BL orders
+            # Read only lavoration with phase that unload material from stock
+            if not lavoration.lavoration_id.phase_id.unload_material:
+                continue
+            # ----------------------------
+            # Product in lavoration order:
+            # ----------------------------
+            element = ("P: %s [%s]" % (
+                lavoration.product.name, 
+                lavoration.product.code,
+            ), lavoration.product.id)
+            if element not in self.rows:
+                # prepare data structure:
+                self.rows.append(element)            
+                self.table[element[1]] = [0.0 for item in range(0, range_date)]       
+                self.table[element[1]][0] = lavoration.product.accounting_qty or 0.0
+
+            if lavoration.date_planned[:10] in col_ids: # Product production
+                self.table[element[1]][col_ids[lavoration.date_planned[:10]]] += lavoration.lavoration_qty or 0.0
+            else: # < today  (element 1 - the second)
+                self.table[element[1]][1] += lavoration.lavoration_qty or 0.0
+
+            # ----------------
+            # Material in BOM:
+            # ----------------                  
+            for material in lavoration.production_id.bom_id.bom_lines: #bom_material_ids:    
+                if not material.product_id.show_in_status: # Jump "not in status" material
+                    continue
+                quantity = material.product_qty * lavoration.lavoration_qty
+                #if with_medium and material.product_id:
+                #    media = "%5.2f" % (material_mx.get(material.product_id.id, 0.0) / month_window / 1000) # t from Kg.
+                #else:
+                #    media = "??"
+                media = "??"
+
+                # Row element description:
+                element=("M: %s [%s]%s" % (
+                    material.product_id.name, 
+                    material.product_id.default_code,
+                    ' <b>%s t.</b>' % (media), ), material.product_id.id)
+                if element not in self.rows:
+                    self.rows.append(element)
+                    self.table[element[1]] = [
+                        0.0 for item in range(0,range_date)
+                        ] # prepare data structure
+                    self.table[element[1]][0] = material.product_id.accounting_qty or 0.0 # prepare data structure
+
+                if lavoration.date_planned[:10] in col_ids:
+                    self.table[element[1]][col_ids[lavoration.date_planned[:10]]] -= quantity or 0.0 
+                else:    # < today
+                    self.table[element[1]][1] -= quantity or 0.0 
+
+        self.rows.sort()
+
         return True
 
     def _get_rows(self):
@@ -209,10 +177,21 @@ class ReportStatusHour(models.AbstractModel):
         '''
         return self.cols
 
-    def _get_cel(self, row, col):
-        ''' Return cell elements or empty one if not present
+    def _get_cel(self, col, row):
+        ''' Cel value from col - row
+            row=product_id
+            col=n position
+            return: (quantity, minimum value)
         '''
-        return self.table.get((row, col), [0, 0, []])
-            
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+        # TODO get from table
+        if row in self.table:
+            return (self.table[row][col], self.minimum.get(row, 0.0))
+        return (0.0, 0.0)
 
+report_sxw.report_sxw(
+    'report.webkitinreportstatus',
+    'product.product', 
+    'addons/textilene_status/report/textilene_status.mako',
+    parser=report_webkit_html
+    )
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

@@ -2,7 +2,7 @@
 <openerp>
   <data>
     <!--Loop for report-->
-    <template id="report_status_hour">
+    <template id="report_in_report_status">
         <style type="text/css">
             body {
                 color: #000 !important;
