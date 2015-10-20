@@ -43,10 +43,62 @@ class ProductProduct(orm.Model):
     ''' Append extra fields to product obj
     '''
     _inherit = 'product.product'
-    
-    _columns = {
-        'textilene_material': fields.boolean('Textilene material',
-            help='Material that will be represented in status report'),
-    }
 
+    # ---------------
+    # Field function:    
+    # ---------------
+    def _get_report_bom(self, cr, uid, ids, fields, args, context=None):
+        ''' Fields function for calculate textilene bom, if present
+        '''
+        res = {}
+        mrp_pool = self.pool.get('mrp.bom')
+        
+        # All bom 'in report' for product passed
+        mrp_ids = mrp_pool.search(cr, uid, [
+            ('product_id', 'in', ids),
+            ('in_report', '=', True),
+            ], context=context)
+            
+        # TODO problem if bom use template!!!!
+        for bom in mrp_pool.browse(cr, uid, mrp_ids, context=context):
+            if bom.product_id.id in res:  
+                # TODO comunicate the error?
+                _logger.error('Bom in report with more than one product')
+            else:
+                res[bom.product_id.id] = bom.id
+        return res
+        
+    _columns = {
+        # Raw material:
+        'in_report': fields.boolean('In report',
+            help='Material that need to be track in report status, used'
+                'for textylene material'),
+        
+        # Product:
+        'report_bom_id': fields.function(
+            _get_report_bom, method=True, 
+            type='many2one', relation='mrp.bom', string='Textilene bom', 
+            help='One reference BOM for product (for in report status)',
+            store=False),                        
+        }
+
+class MrpBom(orm.Model):
+    ''' Append extra fields to BOM
+    '''
+    _inherit = 'mrp.bom'
+    
+    def _function_call(self, cr, uid, ids, fields, args, context=None):
+        ''' Fields function for calculate 
+        '''
+        res = dict.fromkeys(ids, False)
+        # TODO True if one in_report material is present
+        return res
+        
+    _columns = {
+        'in_report': fields.function(
+            _in_report_bom, method=True, 
+            type='boolean', string='In report', store=False, 
+            help='If true the bom will be tracked for status report'), 
+                        
+        }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
