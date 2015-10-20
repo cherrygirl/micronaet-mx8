@@ -30,7 +30,8 @@
     'license': 'AGPL-3',
     'depends': [
         'base',
-        'mrp',
+        'product',
+        'mrp',        
         'report_webkit',
         ],
     'init_xml': [],

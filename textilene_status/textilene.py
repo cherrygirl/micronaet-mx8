@@ -87,15 +87,17 @@ class MrpBom(orm.Model):
     '''
     _inherit = 'mrp.bom'
     
-    def _function_call(self, cr, uid, ids, fields, args, context=None):
+    def _in_report_bom(self, cr, uid, ids, fields, args, context=None):
         ''' Fields function for calculate 
         '''
         res = {}
-        for item in self.browse(cr, uid, ids, context=context):
-            res[bom.id] = any([line.in_report for line in item.bom_line_ids])
+        for bom in self.browse(cr, uid, ids, context=context):
+            res[bom.id] = any([
+                line.product_id.in_report for line in bom.bom_line_ids])
         return res
         
     _columns = {
+        # header:
         'in_report': fields.function(
             _in_report_bom, method=True, 
             type='boolean', string='In report', store=False, 
