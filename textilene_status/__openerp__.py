@@ -39,8 +39,6 @@
     'data': [
         #'security/ir.model.access.csv',        
         'textilene_views.xml',
-        'report/status_report.xml',
-        #'wizard/textilene_status_report.xml',
         ],
     'active': False,
     'installable': True,
