@@ -21,17 +21,17 @@
     'name': 'Textilene status',
     'version': '0.1',
     'category': 'Report',
-    'description': """
+    'description': '''
         Manage status report for textilene material
         Use BOM only for this type of product
-        """,
+        ''',
     'author': 'Micronaet S.r.l. - Nicola Riolini',
     'website': 'http://www.micronaet.it',
     'license': 'AGPL-3',
     'depends': [
         'base',
         'product',
-        'mrp',        
+        'mrp',
         'report_webkit',
         ],
     'init_xml': [],
