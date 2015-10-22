@@ -20,6 +20,10 @@
                 <xpath expr="//page/field[@name='order_line']/form//field[@name='tax_id']" position="after">
                     <field name="date_delivery" /> 
                 </xpath>
+
+                <xpath expr="//page/field[@name='order_line']" position="attributes">
+                    <attribute name="context">{'partner_id': partner_id, 'default_date_delivery': date_delivery}</attribute>
+                </xpath>
             </field>
         </record>
 

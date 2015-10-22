@@ -68,8 +68,4 @@ class SaleOrderLine(orm.Model):
     _columns = {
         'date_delivery': fields.date('Delivery date'),
         }
-    
-    _defaults = {
-        # delivery ?!?
-        }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
