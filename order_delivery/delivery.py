@@ -53,11 +53,11 @@ class SaleOrder(orm.Model):
         order_proxy = self.browse(cr, uid, ids, context=context)[0]
         line_ids = [line.id for line in order_proxy.order_line]
         return line_pool.write(cr, uid, line_ids, {
-            'date_delivery': order_proxy.date_delivery,
+            'date_deadline': order_proxy.date_deadline,
             }, context=context)
         
     _columns = {
-        'date_delivery': fields.date('Delivery date'),
+        'date_deadline': fields.date('Delivery date'),
         }
 
 class SaleOrderLine(orm.Model):
@@ -66,6 +66,6 @@ class SaleOrderLine(orm.Model):
     _inherit = 'sale.order.line'
 
     _columns = {
-        'date_delivery': fields.date('Delivery date'),
+        'date_deadline': fields.date('Delivery date'),
         }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
