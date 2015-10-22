@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <!-- sale.order -->
+        <record model="ir.ui.view" id="view_order_delivery_form_view">
+            <field name="name">sale.order.delivery.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form" />
+            <field name="arch" type="xml">
+                <field name="date_order" position="after">
+                    <group name="delivery_box" colspan="2" col="3">
+                        <field name="date_delivery" />
+                        <button name="force_delivery_line" string="Force" type="object" colspan="1" attrs="{'invisible': [('date_delivery','=',False)]}" class="or_highlight"/>
+                    </group>
+                </field>
+                <!--sale.order.line-->
+                <xpath expr="//page/field[@name='order_line']/tree/field[@name='price_subtotal']" position="before">
+                    <field name="date_delivery" />                    
+                </xpath>
+                <xpath expr="//page/field[@name='order_line']/form//field[@name='tax_id']" position="after">
+                    <field name="date_delivery" /> 
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_order_delivery_tree_view">
+            <field name="name">sale.order.delivery.tree</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_quotation_tree" />
+            <field name="arch" type="xml">
+                <field name="date_order" position="after">
+                    <field name="date_delivery" />
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>
+
