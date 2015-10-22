@@ -38,13 +38,20 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 
 _logger = logging.getLogger(__name__)
 
-class SaleOrder(orm.Model):
-    ''' Manage delivery in header
+class SaleOrderLine(orm.Model):
+    ''' Manage family in sale.order.line
     '''
-    _inherit = 'sale.order'
+    _inherit = 'sale.order.line'
+
+    def _get_family_name(self, cr, uid, ids, context=None):
+        ''' Check when family_id will be modified in product
+        '''
+        return self.pool.get('sale.order.line').search(cr, uid, [
+            ('product_id', 'in', ids)], context=context)            
     
     _columns = {
-        'destination_partner_id': fields.many2one(
-            'res.partner', 'Destination'),     
+        'family_id': fields.related('product_id', 'family_id', 
+            type='many2one', relation='product.template', string='Family', 
+            store={'product.product': (_get_family_name, ['family_id'], 10)}),
         }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
