@@ -38,6 +38,12 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 
 _logger = logging.getLogger(__name__)
 
+mode_list = [
+    ('sale', 'Sale'),
+    ('production', 'Production'),
+    ('delivery', 'Delivery'),
+    ]
+
 class SaleOrder(orm.Model):
     ''' Manage view mode in header
     '''
@@ -45,11 +51,7 @@ class SaleOrder(orm.Model):
 
     _columns = {
         'date_deadline': fields.date('Delivery date'),
-        'line_mode': fields.selection([
-            ('sale', 'Sale'),
-            ('production', 'Production'),
-            ('delivery', 'Delivery'),
-            ], 'View mode'),            
+        'line_mode': fields.selection(mode_list, 'View mode'),            
         }
 
     _defaults = {    
@@ -69,7 +71,7 @@ class SaleOrder(orm.Model):
 
     _columns = {        
         'line_mode': fields.related('order_id', 'line_mode', 
-            type='boolean', string='Line mode', 
+            type='selection', selection=mode_list, string='Line mode', 
             store={'sale.order': (_get_view_mode, ['line_mode'], 10)}),
         }
 
