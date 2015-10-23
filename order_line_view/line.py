@@ -38,7 +38,7 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 
 _logger = logging.getLogger(__name__)
 
-mode_list = [
+"""mode_list = [
     ('sale', 'Sale'),
     ('production', 'Production'),
     ('delivery', 'Delivery'),
@@ -50,7 +50,6 @@ class SaleOrder(orm.Model):
     _inherit = 'sale.order'
 
     _columns = {
-        'date_deadline': fields.date('Delivery date'),
         'line_mode': fields.selection(mode_list, 'View mode'),            
         }
 
@@ -58,7 +57,7 @@ class SaleOrder(orm.Model):
         'line_mode': lambda *x: 'sale',
         }
 
-class SaleOrder(orm.Model):
+class SaleOrderLine(orm.Model):
     ''' Manage view mode in line
     '''
     _inherit = 'sale.order.line'
@@ -73,6 +72,6 @@ class SaleOrder(orm.Model):
         'line_mode': fields.related('order_id', 'line_mode', 
             type='selection', selection=mode_list, string='Line mode', 
             store={'sale.order': (_get_view_mode, ['line_mode'], 10)}),
-        }
+        }"""
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
