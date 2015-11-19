@@ -10,7 +10,7 @@
                 <field name="date_order" position="after">
                     <group name="delivery_box" colspan="2" col="3">
                         <field name="date_deadline" />
-                        <button name="force_delivery_line" string="Force" type="object" colspan="1" attrs="{'invisible': [('date_deadline','=',False)]}" class="or_highlight"/>
+                        <button name="force_delivery_line" string="Force delivery (all line)" type="object" colspan="1" attrs="{'invisible': [('date_deadline','=',False)]}" class="or_highlight"/>
                     </group>
                 </field>
                 <!--sale.order.line-->
