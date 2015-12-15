@@ -4,6 +4,8 @@ __pycache__/
 
 # Micronaet
 *.*~
+*.odt#
+*.ods#
 
 # C extensions
 *.so
