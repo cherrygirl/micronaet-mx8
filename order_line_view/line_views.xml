@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <!-- sale.order -->
+        <record model="ir.ui.view" id="view_order_line_mode_form_view">
+            <field name="name">sale.order.line.mode.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form" />
+            <field name="arch" type="xml">
+                <!--sale.order HEADER:-->            
+                <!--<xpath expr="//page/field[@name='order_line']" position="before">
+                    <group colspan="4" col="4">
+                        <field name="line_mode" />
+                    </group>
+                </xpath>
+                <xpath expr="//page/field[@name='order_line']" position="attributes">
+                    <attribute name="context">{'line_mode': line_mode}</attribute> 
+                </xpath>-->
+                
+                <!--sale.order.line LINE:-->
+                <!--<xpath expr="//page/field[@name='order_line']/tree/field[@name='name']" position="after">
+                    <field name="line_mode" invisible="1" />
+                </xpath>-->
+
+                <xpath expr="//page/field[@name='order_line']/tree/field[@name='name']" position="attributes">
+                    <attribute name="invisible">context.get('mode_production', False)</attribute> 
+                </xpath>
+                <xpath expr="//page/field[@name='order_line']/tree/field[@name='tax_id']" position="attributes">
+                    <attribute name="invisible">context.get('mode_production', False)</attribute> 
+                </xpath>
+                <xpath expr="//page/field[@name='order_line']/tree/field[@name='discount']" position="attributes">
+                    <attribute name="invisible">context.get('mode_production', False)</attribute> 
+                </xpath>
+                <xpath expr="//page/field[@name='order_line']/tree/field[@name='price_subtotal']" position="attributes">
+                    <attribute name="invisible">context.get('mode_production', False)</attribute> 
+                </xpath>
+            </field>
+        </record>
+        
+    </data>
+</openerp>

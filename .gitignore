@@ -2,6 +2,13 @@
 __pycache__/
 *.py[cod]
 
+
+# Micronaet
+*.*~
+*.odt#
+*.ods#
+
+
 # C extensions
 *.so
 
