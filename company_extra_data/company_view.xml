@@ -10,7 +10,7 @@
                     <field name="rml_header2" placeholder="Extra slogan..."  />
                 </field>
                 <field name="rml_header" position="before">
-                    <group colspan="4" cols="4">
+                    <group colspan="4" col="2">
                         <field name="header_capital" />
                         <field name="header_rea" />
                         <field name="header_mecc" />
