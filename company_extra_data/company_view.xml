@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_res_company_extra_data_form">
+            <field name="name">res.company.form</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form"/>
+            <field name="arch" type="xml">
+                <field name="rml_header1" position="after">
+                    <field name="rml_header2" placeholder="Extra slogan..."  />
+                </field>
+                <field name="rml_header" position="before">
+                    <group colspan="4" col="2">
+                        <field name="header_capital" />
+                        <field name="header_rea" />
+                        <field name="header_mecc" />
+                    </group>    
+                </field>                
+            </field>
+        </record>
+    </data>
+</openerp>
+
