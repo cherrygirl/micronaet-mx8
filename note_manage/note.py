@@ -42,7 +42,7 @@ class ResNoteTemplate(orm.Model):
     """ Model name: res.note.template
     """
     
-    _inherit = 'res.note.template'
+    _name = 'res.note.template'
     
     _columns = {
         'propagate': fields.boolean('Propagate',
@@ -52,6 +52,7 @@ class ResNoteTemplate(orm.Model):
         'text': fields.text('Text', required=True),
         'note': fields.text('Note'),
         'object': fields.selection([
+            ('sale', 'sale'),
             # Virtual (to be populated)
             ], 'Object'), 
         }
