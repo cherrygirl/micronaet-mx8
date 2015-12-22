@@ -48,9 +48,7 @@ class ResCompany(orm.Model):
         'header_rea': fields.char('REA', size=15),
         'header_capital': fields.float('Capital', size=40),
         'header_mecc': fields.char('Mecc. code', size=12),
-        'rml_header2': fields.text('Sub slogan', required=False, 
-            readonly=False),
-        'rml_header3': fields.text('Order slogan', required=False, 
-            readonly=False),
+        'header2': fields.text('Sub slogan'),
+        'header3': fields.text('Order slogan'),
         }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
