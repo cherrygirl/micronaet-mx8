@@ -9,8 +9,8 @@
             <field name="report_type">aeroo</field>
             <field name="in_format">oo-odt</field>
             <!--<field name="out_format" eval="ref('report_aeroo_ooo.report_mimetypes_pdf_odt')" />-->
-            <field name="parser_loc">mx_order_report_aeroo/report/invoice_parser.py</field>
-            <field name="report_rml">mx_order_report_aeroo/report/invoice.odt</field>
+            <field name="parser_loc">mx_invoice_report_aeroo/report/invoice_parser.py</field>
+            <field name="report_rml">mx_invoice_report_aeroo/report/invoice.odt</field>
             <field name="parser_state">loc</field>
             <field name="tml_source">file</field>
         </record>
