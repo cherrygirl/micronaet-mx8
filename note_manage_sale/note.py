@@ -39,20 +39,26 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 _logger = logging.getLogger(__name__)
 
 class ResNoteTemplate(orm.Model):
-    """ Model name: res.note.template
+    """ Add field name
     """
     
-    _name = 'res.note.template'
+    _inherit = 'res.note.template'
     
+    def add_object_element(self, cr, uid, context=None):
+        ''' Add object element for sale order (and line)
+        '''
+        object_list = self._column.object[0]
+        element = ('sale.order', 'Sale Order')
+        if element not in object_list:
+            object_list.append(element)
+        element = ('sale.order.line', 'Sale Order Line')
+        if element not in object_list:
+            object_list.append(element)
+        return
+        
     _columns = {
-        'propagate': fields.boolean('Propagate',
-            help='Propagate down the document'),
-        'name': fields.char(
-            'Template name', size=64, required=True),     
-        'text': fields.text('Text', required=True),
-        'note': fields.text('Note'),
-        'object': fields.selection([
-            # Virtual (to be populated)
-            ], 'Object'), 
+        'object': fields.selection(
+            lambda s, cr, uid, ctx: s.add_object_element(
+                cr, uid, ctx), 'Object'), 
         }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

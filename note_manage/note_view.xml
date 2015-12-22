@@ -25,9 +25,9 @@
             <field name="model">res.note.template</field>
             <field name="arch" type="xml">
                 <tree string="Template">
-                    <field name="propagate" />
+                    <field name="object" />
                     <field name="name" />
-                    <field name="text" colspan="4" nolabel="1" />
+                    <field name="propagate" />
                     <field name="note" colspan="4" nolabel="1" />
                 </tree>
             </field>
