@@ -37,7 +37,7 @@ class Parser(report_sxw.rml_parse):
             'bank': self.get_company_bank,
         })
 
-    def get_company_bank(self, obj, field):
+    def get_company_bank(self, o, field):
         ''' Short function for readability
         '''
         try:
