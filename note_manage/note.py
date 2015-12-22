@@ -60,6 +60,8 @@ class ResNoteTemplate(orm.Model):
             ('stock.picking.line', 'DDT'),
             ('account.invoice', 'Invoice'),
             ('account.invoice.line', 'Invoice line'),
+            ('mrp.production', 'MRP order'),
+            ('mrp.production.line', 'MRP order line'),
             ], 'Object'), 
         }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

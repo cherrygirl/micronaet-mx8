@@ -38,53 +38,7 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 
 _logger = logging.getLogger(__name__)
 
-class SaleOder(orm.Model):
-    """ Sale order note
-    """    
-    _inherit = 'sale.order'
 
-    def onchange_note(self, cr, uid, ids, item_id, field, context=None):
-        ''' On change pre 
-        '''
-        res = {'value': {}}
-        if item_id:
-           res['value'][field] = self.pool.get('res.note.template').browse(
-               cr, uid, item_id, context=context)['text']
-        return res
-    
-    _columns = {
-        'text_note_pre_id': fields.many2one('res.note.template', 
-            'Set pre'), 
-        'text_note_post_id': fields.many2one('res.note.template', 
-            'Set post'), 
-        'text_note_pre': fields.text('Pre text'),    
-        'text_note_post': fields.text('Post text'),    
-        }
-        
-class SaleOderLine(orm.Model):
-    """ Sale order line note
-    """    
-    _inherit = 'sale.order.line'
-
-    def onchange_note(self, cr, uid, ids, item_id, field, context=None):
-        ''' On change pre 
-        '''
-        res = {'value': {}}
-        if item_id:
-           res['value'][field] = self.pool.get('res.note.template').browse(
-               cr, uid, item_id, context=context)['text']
-        return res
-    
-    _columns = {
-        'text_note_pre_id': fields.many2one('res.note.template', 
-            'Set pre'), 
-        'text_note_post_id': fields.many2one('res.note.template', 
-            'Set post'), 
-        'text_note_pre': fields.text('Pre text'),    
-        'text_note_post': fields.text('Post text'),    
-        }
-
-# TODO ?        
 '''class ResNoteTemplate(orm.Model):
     """ Add field name
     """
