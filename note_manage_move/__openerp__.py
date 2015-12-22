@@ -18,12 +18,12 @@
 ###############################################################################
 
 {
-    'name': 'Note manager for sale',
+    'name': 'Note manager stock move',
     'version': '0.1',
     'category': 'Customization',
     'description': '''        
-        Manage as note_manage template for
-        sale.order, sale.order.line
+        Create only object for to be used as dep. in another module 
+        (ex. stock pigking)
         ''',
     'author': 'Micronaet S.r.l. - Nicola Riolini',
     'website': 'http://www.micronaet.it',
@@ -31,8 +31,8 @@
     'depends': [
         'base',
         'note_manage',
-        'sale_stock',
-        # TODO
+        'product',
+        'stock',
         ],
     'init_xml': [],
     'demo': [],

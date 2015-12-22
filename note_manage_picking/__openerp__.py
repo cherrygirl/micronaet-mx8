@@ -18,12 +18,12 @@
 ###############################################################################
 
 {
-    'name': 'Note manager for sale',
+    'name': 'Note manager for picking (ddt)',
     'version': '0.1',
     'category': 'Customization',
     'description': '''        
         Manage as note_manage template for
-        sale.order, sale.order.line
+        stock.picking (and .line)
         ''',
     'author': 'Micronaet S.r.l. - Nicola Riolini',
     'website': 'http://www.micronaet.it',
@@ -31,7 +31,8 @@
     'depends': [
         'base',
         'note_manage',
-        'account',
+        'note_manage_move',
+        'stock',
         ],
     'init_xml': [],
     'demo': [],

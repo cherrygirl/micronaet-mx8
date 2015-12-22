@@ -38,29 +38,26 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 
 _logger = logging.getLogger(__name__)
 
+class StockPicking(orm.Model):
+    """ Stock Picking note
+    """    
+    _inherit = 'stock.picking'
 
-'''class ResNoteTemplate(orm.Model):
-    """ Add field name
-    """
+    def onchange_note(self, cr, uid, ids, item_id, field, context=None):
+        ''' On change pre 
+        '''
+        res = {'value': {}}
+        if item_id:
+           res['value'][field] = self.pool.get('res.note.template').browse(
+               cr, uid, item_id, context=context)['text']
+        return res
     
-    _inherit = 'res.note.template'
-    
-    def add_object_element(self, cr, uid, context=None):
-        """ Add object element for sale order (and line)
-        """
-        import pdb; pdb.set_trace()
-        object_list = self._columns['object']
-        element = ('sale.order', 'Sale Order')
-        if element not in object_list:
-            object_list.append(element)
-        element = ('sale.order.line', 'Sale Order Line')
-        if element not in object_list:
-            object_list.append(element)
-        return
-        
     _columns = {
-        'object': fields.selection(
-            lambda s, cr, uid, context: s.add_object_element(cr, uid, context
-            ), 'Object'),
-        }'''
+        'text_note_pre_id': fields.many2one('res.note.template', 
+            'Set pre'), 
+        'text_note_post_id': fields.many2one('res.note.template', 
+            'Set post'), 
+        'text_note_pre': fields.text('Pre text'),    
+        'text_note_post': fields.text('Post text'),    
+        }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

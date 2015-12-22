@@ -53,15 +53,17 @@ class ResNoteTemplate(orm.Model):
         'note': fields.text('Note'),
         'object': fields.selection([
             # Virtual (to be populated) TODO
-            # quotations??
+
             ('sale.order', 'Sale order'),
             ('sale.order.line', 'Sale order line'),
+
             ('stock.picking', 'DDT'),
-            ('stock.picking.line', 'DDT'),
+
             ('account.invoice', 'Invoice'),
-            ('account.invoice.line', 'Invoice line'),
+
             ('mrp.production', 'MRP order'),
-            ('mrp.production.line', 'MRP order line'),
+
+            ('stock.move', 'Stock move'),
             ], 'Object'), 
         }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
