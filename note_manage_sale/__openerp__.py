@@ -30,11 +30,12 @@
     'license': 'AGPL-3',
     'depends': [
         'base',
+        'note_manage',
+        'sale',
         ],
     'init_xml': [],
     'demo': [],
     'data': [
-        'security/ir.model.access.csv',
         'note_view.xml',
         ],
     'active': False,

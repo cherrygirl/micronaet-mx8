@@ -38,16 +38,18 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 
 _logger = logging.getLogger(__name__)
 
-class ResNoteTemplate(orm.Model):
+
+'''class ResNoteTemplate(orm.Model):
     """ Add field name
     """
     
     _inherit = 'res.note.template'
     
     def add_object_element(self, cr, uid, context=None):
-        ''' Add object element for sale order (and line)
-        '''
-        object_list = self._column.object[0]
+        """ Add object element for sale order (and line)
+        """
+        import pdb; pdb.set_trace()
+        object_list = self._columns['object']
         element = ('sale.order', 'Sale Order')
         if element not in object_list:
             object_list.append(element)
@@ -58,7 +60,7 @@ class ResNoteTemplate(orm.Model):
         
     _columns = {
         'object': fields.selection(
-            lambda s, cr, uid, ctx: s.add_object_element(
-                cr, uid, ctx), 'Object'), 
-        }
+            lambda s, cr, uid, context: s.add_object_element(cr, uid, context
+            ), 'Object'),
+        }'''
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
