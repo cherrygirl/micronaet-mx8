@@ -22,6 +22,6 @@
 #
 ##############################################################################
 
-import sale_parser
+import purchase_parser
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
