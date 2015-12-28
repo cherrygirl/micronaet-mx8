@@ -35,15 +35,19 @@
     'depends' : [
         'base',
         'purchase',
+        #'sale',
         
-        #'mx_sale', # TODO maybe reintegrate!
+        'mx_sale', # TODO reintegrated!
         'report_aeroo',
+        
         #'report_aeroo_ooo',
         ],
     'init_xml' : [], 
     'data' : [
         'purchase_view.xml',
+        #'sale_view.xml',
         'report/purchase_report.xml',
+        #'report/sale_report.xml',
         ],
     'demo_xml' : [],
     'test': [],
