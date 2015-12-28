@@ -54,7 +54,9 @@ class SaleOrder(orm.Model):
         :return: UTC datetime string for server-side use
         """
         # TODO: move to fields.datetime in server after 7.0
-        user_date = datetime.strptime(userdate[:10], DEFAULT_SERVER_DATE_FORMAT)
+        user_date = datetime.strptime(
+            userdate[:10], 
+            DEFAULT_SERVER_DATE_FORMAT)
         if context and context.get('tz'):
             tz_name = context['tz']
         else:
@@ -210,10 +212,15 @@ class SaleOrder(orm.Model):
                         cr, uid, order, line, picking_id, 
                         picking_data['date'],
                         context=context)
+
                     # Force qty:
                     #product_uom_qty = order_line_ids[line.id]                        
                     move_data['product_uos_qty'] = order_line_ids[line.id]                        
                     move_data['product_uom_qty'] = order_line_ids[line.id]                        
+                    
+                    # TODO workflow brutal forced:
+                    move_data['state'] = 'done'
+                    
                     if not move_data['product_uom_qty']:
                         continue
                     move_id = move_pool.create(

@@ -180,7 +180,7 @@ class SaleOrder(orm.Model):
         'uncovered_payment': fields.boolean('Uncovered payment'),    
         'uncovered_alert': fields.char('Alert', size=64, readonly=True), 
 
-        # not used picking_ids!!!        
+        # TODO not used picking_ids!!!        
         'stock_picking_ids': fields.one2many(
             'stock.picking', 'sale_id', 'Delivery'),        
         }
