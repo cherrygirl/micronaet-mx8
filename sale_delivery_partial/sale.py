@@ -21,6 +21,7 @@ import os
 import sys
 import logging
 import openerp
+import pytz
 import openerp.netsvc as netsvc
 import openerp.addons.decimal_precision as dp
 from openerp.osv import fields, osv, expression, orm
@@ -43,20 +44,58 @@ class SaleOrder(orm.Model):
     '''
     _inherit = 'sale.order'
 
+    # Copy here from v. 7.0
+    def date_to_datetime(self, cr, uid, userdate, context=None):
+        """ Convert date values expressed in user's timezone to
+        server-side UTC timestamp, assuming a default arbitrary
+        time of 12:00 AM - because a time is needed.
+    
+        :param str userdate: date string in in user time zone
+        :return: UTC datetime string for server-side use
+        """
+        # TODO: move to fields.datetime in server after 7.0
+        user_date = datetime.strptime(userdate[:10], DEFAULT_SERVER_DATE_FORMAT)
+        if context and context.get('tz'):
+            tz_name = context['tz']
+        else:
+            tz_name = self.pool.get('res.users').read(
+                cr, SUPERUSER_ID, uid, ['tz'])['tz']
+        if tz_name:
+            utc = pytz.timezone('UTC')
+            context_tz = pytz.timezone(tz_name)
+            user_datetime = user_date + relativedelta(hours=12.0)
+            local_timestamp = context_tz.localize(user_datetime, is_dst=False)
+            user_datetime = local_timestamp.astimezone(utc)
+            return user_datetime.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+        return user_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+
     # Override method from sale_stock module to keep here!
     def _prepare_order_line_move(self, cr, uid, order, line, picking_id, 
             date_planned, context=None):
         ''' Create a record dict of stock.move
         '''    
-        location_id = order.shop_id.warehouse_id.lot_stock_id.id
-        output_id = order.shop_id.warehouse_id.lot_output_id.id
+        # TODO no more shop_id!!!
+        type_pool = self.pool.get('stock.picking.type')
+        type_ids = type_pool.search(cr, uid, [
+            ('code', '=', 'outgoing')], context=context)
+        if not type_ids:
+            _logger.error('Type outgoing not found')
+            # TODO raise error!
+            return {}
+            
+        type_proxy = type_pool.browse(cr, uid, type_ids, context=context)[0]    
+        location_id = type_proxy.default_location_src_id.id
+        output_id = type_proxy.default_location_dest_id.id
+
+        #location_id = order.shop_id.warehouse_id.lot_stock_id.id
+        #output_id = order.shop_id.warehouse_id.lot_output_id.id
         return {
             'name': line.name,
             'picking_id': picking_id,
             'product_id': line.product_id.id,
             'date': date_planned,
             'date_expected': date_planned,
-            'product_qty': line.product_uom_qty,
+            'product_uom_qty': line.product_uom_qty,
             'product_uom': line.product_uom.id,
             'product_uos_qty': (line.product_uos and line.product_uos_qty) or\
                 line.product_uom_qty,
@@ -79,6 +118,15 @@ class SaleOrder(orm.Model):
         ''' Create a record dict of stock.picking order
         '''
         context = context or {}
+        
+        type_pool = self.pool.get('stock.picking.type')
+        type_ids = type_pool.search(cr, uid, [
+            ('code', '=', 'outgoing')], context=context)
+        if not type_ids:
+            _logger.error('Type outgoing not found')
+            # TODO raise error!
+            return {}
+                
         # Create on date deadline if present:
         date = context.get(
             'force_date_deadline', 
@@ -89,8 +137,9 @@ class SaleOrder(orm.Model):
             'name': pick_name,
             'origin': order.name,
             'date': date,
-            'type': 'out',
-            'state': 'auto',
+            #'type': 'out',
+            'picking_type_id': type_ids[0],
+            'state': 'done', # TODO removed: 'auto',
             'move_type': order.picking_policy,
             'sale_id': order.id,
             # Partner in cascade assignment:
@@ -100,7 +149,7 @@ class SaleOrder(orm.Model):
             'invoice_state': (
                 order.order_policy=='picking' and '2binvoiced') or 'none',
             'company_id': order.company_id.id,
-        }
+            }
 
 
     # -------------------------------------------------------------------------
@@ -139,7 +188,7 @@ class SaleOrder(orm.Model):
         extra_fields = ('transportation_reason_id', 
                 'goods_description_id', 'carriage_condition_id')
         for field in extra_fields:
-            picking_data[field] = order.__getattr__(field).id
+            picking_data[field] = order.__getattribute__(field).id
         
         # Create record        
         picking_id = picking_pool.create(cr, uid, picking_data, 

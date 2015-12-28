@@ -230,4 +230,13 @@ class SaleOrderLine(orm.Model):
     _defaults = {
         'colls': lambda *x: 1,
         }    
+
+class StockMove(orm.Model):
+    ''' Extra field for order line
+    '''    
+    _inherit = 'stock.move'
+        
+    _columns = {
+        'sale_line_id': fields.many2one('sale.order.line', 'Sale line'), 
+        }    
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
