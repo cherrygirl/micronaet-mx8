@@ -38,35 +38,50 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 
 _logger = logging.getLogger(__name__)
 
-class ResNoteTemplate(orm.Model):
-    """ Model name: res.note.template
-    """
-    
-    _name = 'res.note.template'
+class PurchaseOder(orm.Model):
+    """ Purchase order note
+    """    
+    _inherit = 'purchase.order'
+
+    def onchange_note(self, cr, uid, ids, item_id, field, context=None):
+        ''' On change pre 
+        '''
+        res = {'value': {}}
+        if item_id:
+           res['value'][field] = self.pool.get('res.note.template').browse(
+               cr, uid, item_id, context=context)['text']
+        return res
     
     _columns = {
-        'propagate': fields.boolean('Propagate',
-            help='Propagate down the document'),
-        'name': fields.char(
-            'Template name', size=64, required=True),     
-        'text': fields.text('Text', required=True),
-        'note': fields.text('Note'),
-        'object': fields.selection([
-            # Virtual (to be populated) TODO
-
-            ('sale.order', 'Sale order'),
-            ('sale.order.line', 'Sale order line'),
-
-            ('purchase.order', 'Purchase order'),
-            ('purchase.order.line', 'Purchase order line'),
-
-            ('stock.picking', 'DDT'),
-
-            ('account.invoice', 'Invoice'),
-
-            ('mrp.production', 'MRP order'),
-
-            ('stock.move', 'Stock move'),
-            ], 'Object'), 
+        'text_note_pre_id': fields.many2one('res.note.template', 
+            'Set pre'), 
+        'text_note_post_id': fields.many2one('res.note.template', 
+            'Set post'), 
+        'text_note_pre': fields.text('Pre text'),    
+        'text_note_post': fields.text('Post text'),    
         }
+        
+class PurchaseOderLine(orm.Model):
+    """ Sale order line note
+    """    
+    _inherit = 'purchase.order.line'
+
+    def onchange_note(self, cr, uid, ids, item_id, field, context=None):
+        ''' On change pre 
+        '''
+        res = {'value': {}}
+        if item_id:
+           res['value'][field] = self.pool.get('res.note.template').browse(
+               cr, uid, item_id, context=context)['text']
+        return res
+    
+    _columns = {
+        'text_note_pre_id': fields.many2one('res.note.template', 
+            'Set pre'), 
+        'text_note_post_id': fields.many2one('res.note.template', 
+            'Set post'), 
+        'text_note_pre': fields.text('Pre text'),    
+        'text_note_post': fields.text('Post text'),    
+        }
+
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

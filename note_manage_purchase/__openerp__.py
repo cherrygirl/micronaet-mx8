@@ -1,4 +1,4 @@
-###############################################################################
+	###############################################################################
 #
 #    Copyright (C) 2001-2014 Micronaet SRL (<http://www.micronaet.it>).
 #
@@ -18,24 +18,25 @@
 ###############################################################################
 
 {
-    'name': 'MX DDT',
+    'name': 'Note manager for sale',
     'version': '0.1',
-    'category': 'Accounting',
+    'category': 'Customization',
     'description': '''        
-        DDT module with mx stock move
+        Manage as note_manage template for
+        sale.order, sale.order.line
         ''',
     'author': 'Micronaet S.r.l. - Nicola Riolini',
     'website': 'http://www.micronaet.it',
     'license': 'AGPL-3',
     'depends': [
         'base',
-        'stock',        
-        'sale_stock',
+        'note_manage',
+        'sale',
         ],
     'init_xml': [],
     'demo': [],
     'data': [
-        'view/ddt_view.xml',
+        'note_view.xml',
         ],
     'active': False,
     'installable': True,
