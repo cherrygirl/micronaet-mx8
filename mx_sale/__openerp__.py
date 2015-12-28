@@ -33,7 +33,7 @@
         'sale',
         'sale_stock',
         #'sale_address',
-        #'l10n_it_sale',
+        #'l10n_it_sale', # TODO remove
         'mexal_ddt', # for print button
         ],
     'init_xml': [],

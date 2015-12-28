@@ -20,7 +20,7 @@
 #
 
 from openerp.osv import orm
-from tools.translate import _
+from openerp.tools.translate import _
 import time
 
 
@@ -29,7 +29,7 @@ class wizard_assign_ddt(orm.TransientModel):
     _name = "wizard.assign.ddt"
 
     def assign_ddt(self, cr, uid, ids, context=None):
-        picking_obj = self.pool.get('stock.picking.out')
+        picking_obj = self.pool.get('stock.picking')
         for picking in picking_obj.browse(
             cr, uid, context.get('active_ids', []), context=context
         ):
@@ -37,7 +37,7 @@ class wizard_assign_ddt(orm.TransientModel):
                 raise orm.except_orm('Error', _('DTT number already assigned'))
             picking.write({
                 'ddt_number': self.pool.get('ir.sequence').get(
-                    cr, uid, 'stock.ddt'),
+                    cr, uid, 'stock.picking.ddt'),
                 'ddt_date': time.strftime('%Y-%m-%d'),
             })
         return {

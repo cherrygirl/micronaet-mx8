@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 #
-#    Copyright (C) 2010 Associazione OpenERP Italia
+#    Copyright (C) 2010-2012 Associazione OpenERP Italia
 #    (<http://www.openerp-italia.org>).
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -19,8 +19,12 @@
 #
 #
 
-#from . import sale # copy extra info to invoice
-from . import stock
-#from . import account
-#from . import partner # Add extra info for DDT
-from . import wizard
+from openerp.osv import orm, fields
+
+
+class stock_picking(orm.Model):
+    _inherit = 'stock.picking'
+    _columns = {
+        'ddt_number': fields.char('DDT', size=64),
+        'ddt_date': fields.date('DDT date'),
+    }

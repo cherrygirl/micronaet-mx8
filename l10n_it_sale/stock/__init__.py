@@ -19,4 +19,5 @@
 #
 #
 
-from . import picking
+from . import ddt
+#from . import picking
