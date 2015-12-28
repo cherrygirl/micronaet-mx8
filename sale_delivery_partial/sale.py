@@ -107,7 +107,7 @@ class SaleOrder(orm.Model):
             'location_id': location_id,
             'location_dest_id': output_id,
             'sale_line_id': line.id,
-            'tracking_id': False,
+            #'tracking_id': False,
             'state': 'draft',
             #'state': 'waiting',
             'company_id': order.company_id.id,
@@ -209,8 +209,8 @@ class SaleOrder(orm.Model):
                     # Force qty:
                     #product_uom_qty = order_line_ids[line.id]                        
                     move_data['product_uos_qty'] = order_line_ids[line.id]                        
-                    move_data['product_qty'] = order_line_ids[line.id]                        
-                    if not move_data['product_qty']:
+                    move_data['product_uom_qty'] = order_line_ids[line.id]                        
+                    if not move_data['product_uom_qty']:
                         continue
                     move_id = move_pool.create(
                         cr, uid, move_data, context=context)
