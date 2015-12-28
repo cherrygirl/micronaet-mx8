@@ -4,7 +4,7 @@
 #
 #   Copyright (C) 2010-2012 Associazione OpenERP Italia
 #   (<http://www.openerp-italia.org>).
-#   Copyright(c)2008-2010 SIA "KN dati".(http://kndati.lv) All Rights Reserved.
+#   Copyright(c)2008-2010 SIA 'KN dati'.(http://kndati.lv) All Rights Reserved.
 #                   General contacts <info@kndati.lv>
 #
 #   This program is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ class Parser(report_sxw.rml_parse):
         ''' Short function for readability
         '''
         try:
-           return obj.bank_account_company_id.__getattr__(field)
+           return obj.bank_account_company_id.__getattribute__(field)
         except:
             return ''   
 
@@ -56,6 +56,6 @@ class Parser(report_sxw.rml_parse):
         ''' Set counter with name with value passed
         '''
         self.counters[name] = value
-        return "" # empty so no write in module
+        return '' # empty so no write in module
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
