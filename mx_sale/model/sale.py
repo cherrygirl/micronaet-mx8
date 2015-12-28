@@ -43,6 +43,15 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 
 _logger = logging.getLogger(__name__)
 
+class StockPicking(orm.Model):
+    ''' Add alternative method for picking creation
+    '''
+    _inherit = 'stock.picking'
+    
+    _columns = {
+        'sale_id': fields.many2one('sale.order', 'Sale order'), 
+        }
+
 class ResPartner(orm.Model):
     ''' Extra field for partner
     '''    
@@ -52,7 +61,6 @@ class ResPartner(orm.Model):
         'incoterm_id':fields.many2one(
             'stock.incoterms', 'Default incoterm', ondelete='set null'),        
         }
-    
 
 class SaleOrder(orm.Model):
     ''' Extra field for order
@@ -97,7 +105,6 @@ class SaleOrder(orm.Model):
                 'transportation_reason_id': False,
                 'payment_term_id': False,
                 'bank_account_id': False,
-                'uncovered_payment': False,
                 })
             return res
 
@@ -113,9 +120,6 @@ class SaleOrder(orm.Model):
             'transportation_reason_id': 
                 partner_proxy.transportation_reason_id.id,
             'payment_term_id': partner_proxy.property_payment_term.id,            
-            
-            # Alert:
-            'uncovered_payment': partner_proxy.duelist_uncovered,
             })
         # Set default account for partner    
         if partner_proxy.bank_ids:
@@ -175,6 +179,10 @@ class SaleOrder(orm.Model):
         # Alert:
         'uncovered_payment': fields.boolean('Uncovered payment'),    
         'uncovered_alert': fields.char('Alert', size=64, readonly=True), 
+
+        # not used picking_ids!!!        
+        'stock_picking_ids': fields.one2many(
+            'stock.picking', 'sale_id', 'Delivery'),        
         }
         
     _defaults = {

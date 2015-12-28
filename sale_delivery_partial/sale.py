@@ -133,7 +133,6 @@ class SaleOrder(orm.Model):
             self.date_to_datetime(cr, uid, order.date_order, context))
         pick_name = self.pool.get('ir.sequence').get(
             cr, uid, 'stock.picking.out')
-        import pdb; pdb.set_trace()    
         return {
             'name': pick_name,
             'origin': order.name,
@@ -142,8 +141,10 @@ class SaleOrder(orm.Model):
             'picking_type_id': type_ids[0],
             'state': 'done', # TODO removed: 'auto',
             'move_type': order.picking_policy,
-            #'sale_id': order.id, # TODO no more used!
+
+            # TODO create using group_id instead of sale_id
             'group_id': order.procurement_group_id.id,
+            'sale_id': order.id, # TODO no more used!
             
             # Partner in cascade assignment:
             'partner_id': order.partner_shipping_id.id or order.address_id.id \
@@ -193,7 +194,7 @@ class SaleOrder(orm.Model):
         for field in extra_fields:
             picking_data[field] = order.__getattribute__(field).id
         
-        # Create record        
+        # Create record    
         picking_id = picking_pool.create(cr, uid, picking_data, 
             context=context)
         
