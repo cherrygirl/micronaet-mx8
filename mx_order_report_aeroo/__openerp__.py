@@ -34,15 +34,16 @@
     'license': 'AGPL-3',
     'depends' : [
         'base',
-        'sale',
+        'purchase',
+        
         #'mx_sale', # TODO maybe reintegrate!
         'report_aeroo',
         #'report_aeroo_ooo',
         ],
     'init_xml' : [], 
     'data' : [
-        'sale_view.xml',
-        'report/sale_report.xml',
+        'purchase_view.xml',
+        'report/purchase_report.xml',
         ],
     'demo_xml' : [],
     'test': [],
