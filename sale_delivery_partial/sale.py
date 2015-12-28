@@ -133,6 +133,7 @@ class SaleOrder(orm.Model):
             self.date_to_datetime(cr, uid, order.date_order, context))
         pick_name = self.pool.get('ir.sequence').get(
             cr, uid, 'stock.picking.out')
+        import pdb; pdb.set_trace()    
         return {
             'name': pick_name,
             'origin': order.name,
@@ -141,7 +142,9 @@ class SaleOrder(orm.Model):
             'picking_type_id': type_ids[0],
             'state': 'done', # TODO removed: 'auto',
             'move_type': order.picking_policy,
-            'sale_id': order.id,
+            #'sale_id': order.id, # TODO no more used!
+            'group_id': order.procurement_group_id.id,
+            
             # Partner in cascade assignment:
             'partner_id': order.partner_shipping_id.id or order.address_id.id \
                 or order.partner_id.id,
@@ -218,7 +221,7 @@ class SaleOrder(orm.Model):
                     # a service has no stock move
                     move_id = False
 
-        wf_service = netsvc.LocalService('workflow')
+        wf_service = netsvc.LocalService('workflow') # TODO deprecated!
         if picking_id:
             wf_service.trg_validate(
                 uid, 'stock.picking', picking_id, 'button_confirm', cr)
