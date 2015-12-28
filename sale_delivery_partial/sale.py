@@ -169,7 +169,7 @@ class SaleOrder(orm.Model):
                     # a service has no stock move
                     move_id = False
 
-        wf_service = netsvc.LocalService("workflow")
+        wf_service = netsvc.LocalService('workflow')
         if picking_id:
             wf_service.trg_validate(
                 uid, 'stock.picking', picking_id, 'button_confirm', cr)
