@@ -32,8 +32,8 @@
         'stock',
         'sale',
         'sale_stock',
-        #'sale_address',
-        #'l10n_it_sale', # TODO remove
+        #'sale_address', # TODO needes?
+        'l10n_it_sale',
         'mexal_ddt', # for print button
         ],
     'init_xml': [],

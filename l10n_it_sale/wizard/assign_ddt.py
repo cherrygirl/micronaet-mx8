@@ -32,7 +32,7 @@ class wizard_assign_ddt(orm.TransientModel):
         picking_obj = self.pool.get('stock.picking')
         for picking in picking_obj.browse(
             cr, uid, context.get('active_ids', []), context=context
-        ):
+            ):
             if picking.ddt_number:
                 raise orm.except_orm('Error', _('DTT number already assigned'))
             picking.write({
@@ -42,4 +42,4 @@ class wizard_assign_ddt(orm.TransientModel):
             })
         return {
             'type': 'ir.actions.act_window_close',
-        }
+            }
