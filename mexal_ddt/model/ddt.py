@@ -44,7 +44,7 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 _logger = logging.getLogger(__name__)
 
 class StockPicking(orm.Model):
-    _inherit = 'stock.picking.out'
+    _inherit = 'stock.picking'
     
     # -------------    
     # Button event:    
@@ -86,6 +86,7 @@ class StockPicking(orm.Model):
         ctx['active_ids'] = ids # needed list
         
         # TODO set current date for delivery ?? 
+        # TODO correct!!?!?!
         return self.pool.get('wizard.assign.ddt').assign_ddt(
             cr, uid, ids, context=ctx)
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

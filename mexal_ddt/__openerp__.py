@@ -36,7 +36,7 @@
     'demo': [],
     'data': [
         #'security/ir.model.access.csv',    
-        'view/ddt_view.xml',
+        # TODO 'view/ddt_view.xml',
         ],
     'active': False,
     'installable': True,
